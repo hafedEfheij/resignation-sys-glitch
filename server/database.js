@@ -2,21 +2,22 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 
-// Determine if we're in production (Render) or development
-const isProd = process.env.NODE_ENV === 'production';
+// Determine if we're in production (Glitch) or development
+const isGlitch = process.env.PROJECT_DOMAIN !== undefined;
 
-// On Render, use the /data directory which is persistent
+// On Glitch, use the .data directory which is persistent
 // In development, use the local directory
-const dbPath = isProd
-  ? '/data/university.db'
+const dbPath = isGlitch
+  ? path.join(__dirname, '../.data/university.db')
   : path.join(__dirname, 'university.db');
 
-// Ensure the data directory exists in production
-if (isProd) {
+// Ensure the .data directory exists in production
+if (isGlitch) {
   try {
-    if (!fs.existsSync('/data')) {
-      fs.mkdirSync('/data', { recursive: true });
-      console.log('Created /data directory for database storage');
+    const dataDir = path.join(__dirname, '../.data');
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+      console.log('Created .data directory for database storage');
     }
   } catch (err) {
     console.error('Error creating data directory:', err.message);

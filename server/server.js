@@ -1927,4 +1927,10 @@ app.get('/api/admin/course/:id/students', adminMiddleware, (req, res) => {
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+
+  // Start keep-alive service if running on Glitch
+  if (process.env.PROJECT_DOMAIN) {
+    console.log('Running on Glitch, starting keep-alive service');
+    require('../keep-alive');
+  }
 });
